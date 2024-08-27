@@ -6,9 +6,9 @@ function App() {
   const navigate = useNavigate();
   const [clickCount, setClickCount] = useState(0);
 
-  const handleCostAwesomeClick = async () => {
+  const handleCostClick = async (feedbackType) => {
     try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/cost/awesome', {
+      const response = await fetch(`https://feedback-api.predeepkumar-us2022cse.workers.dev/cost/${feedbackType}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,87 +19,17 @@ function App() {
         throw new Error('Error submitting rating');
       }
 
-      navigate('/page3');
+      navigate('/page3')
     } catch (error) {
       console.error('Error submitting rating:', error);
     }
   };
 
-  const handleCostGoodClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/cost/good', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/page3');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    }
-  };
-
-  const handleCostAverageClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/cost/average', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/page3');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    }
-  };
-
-  const handleCostPoorClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/cost/poor', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/page3');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    }
-  };
-
-  const handleCostWorstClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/cost/worst', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/page3');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    }
-  };
+  const handleCostAwesomeClick = () => handleCostClick('awesome');
+  const handleCostGoodClick = () => handleCostClick('good');
+  const handleCostAverageClick = () => handleCostClick('average');
+  const handleCostPoorClick = () => handleCostClick('poor');
+  const handleCostWorstClick = () => handleCostClick('worst');
 
   const handleHeaderClick = () => {
     setClickCount((prevCount) => {
@@ -111,6 +41,13 @@ function App() {
       return newCount;
     });
   };
+
+  React.useEffect(() => {
+    const feedbackSubmitted = localStorage.getItem('feedbackSubmitted');
+    if (feedbackSubmitted === 'true') {
+      navigate('/thank-you'); 
+    }
+  }, [navigate]);
 
   return (
     <div className="h-screen w-full bg-red-500 flex flex-col">

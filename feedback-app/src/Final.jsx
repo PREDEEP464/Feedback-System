@@ -1,14 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
-function App() {
+function FormPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [clickCount, setClickCount] = useState(0);
 
   const navigate = useNavigate();
-  const [clickCount, setClickCount] = useState(0);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/details', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, phone }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error submitting rating');
+      }
+
+      localStorage.setItem('feedbackSubmitted', 'true');
+
+      navigate('/thank-you'); 
+    } catch (error) {
+      console.error('Error submitting rating:', error);
+    }
+  };
 
   const handleHeaderClick = () => {
     setClickCount((prevCount) => {
@@ -21,30 +45,12 @@ function App() {
     });
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    // Send form data to the backend
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/details', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, phone }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Form submitted:', data);
-      navigate('/thank-you'); // Redirect or show a success message
-    } catch (error) {
-      console.error('Error submitting form:', error);
+  React.useEffect(() => {
+    const feedbackSubmitted = localStorage.getItem('feedbackSubmitted');
+    if (feedbackSubmitted === 'true') {
+      navigate('/thank-you'); 
     }
-  };
+  }, [navigate]);
 
   return (
     <div className="h-screen w-full bg-red-500 flex flex-col">
@@ -115,4 +121,4 @@ function App() {
   );
 }
 
-export default App;
+export default FormPage;

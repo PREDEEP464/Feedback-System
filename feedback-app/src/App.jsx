@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
 function App() {
   const navigate = useNavigate();
-  const [clickCount, setClickCount] = useState(0);
 
-  const handleFoodAwesomeClick = async () => {
+  const handleFoodClick = async (feedbackType) => {
     try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/food/awesome', {
+      const response = await fetch(`https://feedback-api.predeepkumar-us2022cse.workers.dev/food/${feedbackType}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,104 +18,29 @@ function App() {
         throw new Error('Error submitting rating');
       }
 
-      navigate('/page2');
+      navigate('/page2'); 
     } catch (error) {
       console.error('Error submitting rating:', error);
     }
   };
 
-  const handleFoodGoodClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/food/good', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+  const handleFoodAwesomeClick = () => handleFoodClick('awesome');
+  const handleFoodGoodClick = () => handleFoodClick('good');
+  const handleFoodAverageClick = () => handleFoodClick('average');
+  const handleFoodPoorClick = () => handleFoodClick('poor');
+  const handleFoodWorstClick = () => handleFoodClick('worst');
 
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/page2');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
+  React.useEffect(() => {
+    const feedbackSubmitted = localStorage.getItem('feedbackSubmitted');
+    if (feedbackSubmitted === 'true') {
+      navigate('/thank-you'); 
     }
-  };
-
-  const handleFoodAverageClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/food/average', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/page2');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    }
-  };
-
-  const handleFoodPoorClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/food/poor', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/page2');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    }
-  };
-
-  const handleFoodWorstClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/food/worst', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/page2');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    }
-  };
-
-  const handleHeaderClick = () => {
-    setClickCount((prevCount) => {
-      const newCount = prevCount + 1;
-      if (newCount === 3) {
-        navigate('/'); 
-        return 0;
-      }
-      return newCount;
-    });
-  };
+  }, [navigate]);
 
   return (
     <div className="h-screen w-full bg-red-500 flex flex-col">
       <header 
-        className="bg-red-800 text-white py-4 text-center fixed top-0 left-0 w-full z-10 cursor-pointer"
-        onClick={handleHeaderClick}
+        className="bg-red-800 text-white py-4 text-center fixed top-0 left-0 w-full z-10"
       >
         <h1 className="text-3xl font-bold">Feedback System</h1>
       </header>

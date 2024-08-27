@@ -6,9 +6,9 @@ function App() {
   const navigate = useNavigate();
   const [clickCount, setClickCount] = useState(0);
 
-  const handleQualityAwesomeClick = async () => {
+  const handleQualityClick = async (feedbackType) => {
     try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/quality/awesome', {
+      const response = await fetch(`https://feedback-api.predeepkumar-us2022cse.workers.dev/quality/${feedbackType}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,87 +19,18 @@ function App() {
         throw new Error('Error submitting rating');
       }
 
-      navigate('/final');
+      navigate('/final')
     } catch (error) {
       console.error('Error submitting rating:', error);
     }
   };
 
-  const handleQualityGoodClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/quality/good', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+  const handleQualityAwesomeClick = () => handleQualityClick('awesome');
+  const handleQualityGoodClick = () => handleQualityClick('good');
+  const handleQualityAverageClick = () => handleQualityClick('average');
+  const handleQualityPoorClick = () => handleQualityClick('poor');
+  const handleQualityWorstClick = () => handleQualityClick('worst');
 
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/final');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    }
-  };
-
-  const handleQualityAverageClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/quality/average', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/final');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    }
-  };
-
-  const handleQualityPoorClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/quality/poor', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/final');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    }
-  };
-
-  const handleQualityWorstClick = async () => {
-    try {
-      const response = await fetch('https://feedback-api.predeepkumar-us2022cse.workers.dev/quality/worst', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error submitting rating');
-      }
-
-      navigate('/final');
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    }
-  };
 
   const handleHeaderClick = () => {
     setClickCount((prevCount) => {
@@ -111,6 +42,14 @@ function App() {
       return newCount;
     });
   };
+
+  React.useEffect(() => {
+    const feedbackSubmitted = localStorage.getItem('feedbackSubmitted');
+    if (feedbackSubmitted === 'true') {
+      navigate('/thank-you'); 
+    }
+  }, [navigate]);
+
 
   return (
     <div className="h-screen w-full bg-red-500 flex flex-col">
